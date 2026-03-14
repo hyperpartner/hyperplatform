@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hyperplatform"
+version = "0.0.1"
+description = "Async bot framework for HyperPlatform"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+dependencies = [
+    "aiohttp>=3.9",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+redis = ["redis>=4.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["hyperplatform"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "dist/",
+    "*.pyc",
+    "__pycache__/",
+]

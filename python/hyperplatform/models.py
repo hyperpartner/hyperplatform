@@ -41,7 +41,7 @@ class MessageAttachment(BaseModel):
 class ServerMessageBody(BaseModel):
     text: Optional[str] = None
     form_data: Optional[FormData] = None
-    message_type: Literal["text", "callback", "document", "image", "audio", "form"]
+    message_type: Literal["text", "callback", "document", "image", "audio", "video", "form"]
 
     # опциональные поля ДОЛЖНЫ иметь default=None, иначе Pydantic требует их в JSON
     callback_message_id: Optional[int] = None

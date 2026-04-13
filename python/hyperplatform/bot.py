@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 import aiohttp
 from typing import Any, Dict, List, Optional, Literal
 
@@ -189,7 +191,11 @@ class Bot:
             mime_type: str = None,
             text: str = "",
             chunk_size: int = 5 * 1024 * 1024,  # 5 MB
+            inline_keyboard: Optional[list] = None,
     ) -> int:
+        if isinstance(inline_keyboard, InlineKeyboardMarkup):
+            inline_keyboard = inline_keyboard.to_list()
+
         session = await self._get_session()
         url = f"{self.base_url}/sendFile"
         total_size = len(file)
@@ -200,6 +206,8 @@ class Bot:
             form.add_field("text", text)
             form.add_field("file", file, filename=file_name, content_type=mime_type)
             form.add_field("mime_type", mime_type or "application/octet-stream")
+            if inline_keyboard is not None:
+                form.add_field("inline_keyboard", json.dumps(inline_keyboard))
             async with session.post(url, headers=self.headers, data=form) as resp:
                 data = await resp.json(content_type=None)
                 return int(data["message_id"])
@@ -221,6 +229,8 @@ class Bot:
             form.add_field("total_size", str(total_size))
             form.add_field("mime_type", mime_type)
             form.add_field("file_name", file_name)
+            if inline_keyboard is not None and chunk_index == 0:
+                form.add_field("inline_keyboard", json.dumps(inline_keyboard))
 
             async with session.post(url, headers=self.headers, data=form) as resp:
                 data = await resp.json(content_type=None)
